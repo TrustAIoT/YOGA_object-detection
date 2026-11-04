@@ -7,7 +7,7 @@ import os
 import warnings
 from threading import Thread
 
-import pkg_resources as pkg
+from utils import pkg_compat as pkg
 import torch
 from torch.utils.tensorboard import SummaryWriter
 
@@ -64,7 +64,7 @@ class Loggers():
         # W&B
         if wandb and 'wandb' in self.include:
             wandb_artifact_resume = isinstance(self.opt.resume, str) and self.opt.resume.startswith('wandb-artifact://')
-            run_id = torch.load(self.weights).get('wandb_id') if self.opt.resume and not wandb_artifact_resume else None
+            run_id = torch.load(self.weights, weights_only=False).get('wandb_id') if self.opt.resume and not wandb_artifact_resume else None
             self.opt.hyp = self.hyp  # add hyperparameters
             self.wandb = WandbLogger(self.opt, run_id)
         else:

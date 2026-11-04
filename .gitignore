@@ -1,0 +1,13 @@
+__pycache__/
+*.py[cod]
+.DS_Store
+.ipynb_checkpoints/
+
+# training and inference outputs
+runs/
+*.pt
+!data/**/*.pt
+
+# datasets downloaded by data/scripts
+../datasets/
+datasets/

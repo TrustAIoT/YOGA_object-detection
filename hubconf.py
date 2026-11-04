@@ -1,10 +1,12 @@
-# YOLOv5 🚀 by Ultralytics, GPL-3.0 license
+# YOGA (Sunkara & Luo, Pattern Recognition 2023), built on YOLOv5 by Ultralytics, GPL-3.0 license
 """
-PyTorch Hub models https://pytorch.org/hub/ultralytics_yolov5/
+PyTorch Hub entry points for the pretrained COCO YOGA models.
 
 Usage:
     import torch
-    model = torch.hub.load('ultralytics/yolov5', 'yolov5s')
+    model = torch.hub.load('TrustAIoT/YOGA_object-detection', 'yoga_s')  # or yoga_n, yoga_m, yoga_l
+    results = model('https://ultralytics.com/images/zidane.jpg')
+    results.print()
 """
 
 import torch
@@ -48,7 +50,7 @@ def _create(name, pretrained=True, channels=3, classes=80, autoshape=True, verbo
             cfg = list((Path(__file__).parent / 'models').rglob(f'{name}.yaml'))[0]  # model.yaml path
             model = Model(cfg, channels, classes)  # create model
             if pretrained:
-                ckpt = torch.load(attempt_download(path), map_location=device)  # load
+                ckpt = torch.load(attempt_download(path), map_location=device, weights_only=False)  # load
                 msd = model.state_dict()  # model state_dict
                 csd = ckpt['model'].float().state_dict()  # checkpoint state_dict as FP32
                 csd = {k: v for k, v in csd.items() if msd[k].shape == v.shape}  # filter
@@ -60,9 +62,29 @@ def _create(name, pretrained=True, channels=3, classes=80, autoshape=True, verbo
         return model.to(device)
 
     except Exception as e:
-        help_url = 'https://github.com/ultralytics/yolov5/issues/36'
+        help_url = 'https://github.com/TrustAIoT/YOGA_object-detection/issues'
         s = 'Cache may be out of date, try `force_reload=True`. See %s for help.' % help_url
         raise Exception(s) from e
+
+
+def yoga_n(pretrained=True, channels=3, classes=80, autoshape=True, verbose=True, device=None):
+    # YOGA-n: 1.9M params, 4.9 GFLOPs, 32.3 AP on COCO val2017
+    return _create('YOGA-n', pretrained, channels, classes, autoshape, verbose, device)
+
+
+def yoga_s(pretrained=True, channels=3, classes=80, autoshape=True, verbose=True, device=None):
+    # YOGA-s: 7.6M params, 16.6 GFLOPs, 40.7 AP on COCO val2017
+    return _create('YOGA-s', pretrained, channels, classes, autoshape, verbose, device)
+
+
+def yoga_m(pretrained=True, channels=3, classes=80, autoshape=True, verbose=True, device=None):
+    # YOGA-m: 16.3M params, 34.6 GFLOPs, 45.2 AP on COCO val2017
+    return _create('YOGA-m', pretrained, channels, classes, autoshape, verbose, device)
+
+
+def yoga_l(pretrained=True, channels=3, classes=80, autoshape=True, verbose=True, device=None):
+    # YOGA-l: 33.6M params, 71.8 GFLOPs, 48.9 AP on COCO val2017
+    return _create('YOGA-l', pretrained, channels, classes, autoshape, verbose, device)
 
 
 def custom(path='path/to/model.pt', autoshape=True, verbose=True, device=None):
@@ -121,7 +143,7 @@ def yolov5x6(pretrained=True, channels=3, classes=80, autoshape=True, verbose=Tr
 
 
 if __name__ == '__main__':
-    model = _create(name='yolov5s', pretrained=True, channels=3, classes=80, autoshape=True, verbose=True)  # pretrained
+    model = _create(name='YOGA-s', pretrained=True, channels=3, classes=80, autoshape=True, verbose=True)  # pretrained
     # model = custom(path='path/to/model.pt')  # custom
 
     # Verify inference

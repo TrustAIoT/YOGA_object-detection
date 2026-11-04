@@ -1,0 +1,30 @@
+cff-version: 1.2.0
+message: "If you use YOGA or its building blocks, please cite the paper below."
+title: "YOGA: Deep Object Detection in the Wild with Lightweight Feature Learning and Multiscale Attention"
+authors:
+  - family-names: Sunkara
+    given-names: Raja
+  - family-names: Luo
+    given-names: Tie
+license: GPL-3.0
+repository-code: "https://github.com/TrustAIoT/YOGA_object-detection"
+keywords:
+  - object detection
+  - lightweight
+  - edge computing
+  - attention
+  - ghost convolution
+preferred-citation:
+  type: article
+  title: "YOGA: Deep Object Detection in the Wild with Lightweight Feature Learning and Multiscale Attention"
+  authors:
+    - family-names: Sunkara
+      given-names: Raja
+    - family-names: Luo
+      given-names: Tie
+  journal: "Pattern Recognition"
+  volume: 139
+  start: 109451
+  year: 2023
+  doi: "10.1016/j.patcog.2023.109451"
+  url: "https://arxiv.org/abs/2307.05945"

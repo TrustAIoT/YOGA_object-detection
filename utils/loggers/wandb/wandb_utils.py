@@ -6,7 +6,7 @@ import sys
 from contextlib import contextmanager
 from pathlib import Path
 
-import pkg_resources as pkg
+from utils import pkg_compat as pkg
 import yaml
 from tqdm import tqdm
 

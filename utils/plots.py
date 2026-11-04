@@ -56,9 +56,20 @@ def check_font(font='Arial.ttf', size=10):
         return ImageFont.truetype(str(font) if font.exists() else font.name, size)
     except Exception as e:  # download if missing
         url = "https://ultralytics.com/assets/" + font.name
-        print(f'Downloading {url} to {font}...')
-        torch.hub.download_url_to_file(url, str(font), progress=False)
-        return ImageFont.truetype(str(font), size)
+        try:
+            print(f'Downloading {url} to {font}...')
+            torch.hub.download_url_to_file(url, str(font), progress=False)
+            return ImageFont.truetype(str(font), size)
+        except Exception:  # offline (e.g. an edge device) or URL gone: use PIL's built-in font
+            return ImageFont.load_default()
+
+
+def _text_size(font, text):
+    # Pillow 10 removed FreeTypeFont.getsize; getbbox works on Pillow >= 8
+    if hasattr(font, 'getbbox'):
+        x0, y0, x1, y1 = font.getbbox(text)
+        return x1 - x0, y1 - y0
+    return font.getsize(text)
 
 
 class Annotator:
@@ -83,7 +94,7 @@ class Annotator:
         if self.pil or not is_ascii(label):
             self.draw.rectangle(box, width=self.lw, outline=color)  # box
             if label:
-                w, h = self.font.getsize(label)  # text width, height
+                w, h = _text_size(self.font, label)  # text width, height
                 outside = box[1] - h >= 0  # label fits outside box
                 self.draw.rectangle([box[0],
                                      box[1] - h if outside else box[1],
@@ -109,7 +120,7 @@ class Annotator:
 
     def text(self, xy, text, txt_color=(255, 255, 255)):
         # Add text to image (PIL-only)
-        w, h = self.font.getsize(text)  # text width, height
+        w, h = _text_size(self.font, text)  # text width, height
         self.draw.text((xy[0], xy[1] - h + 1), text, fill=txt_color, font=self.font)
 
     def result(self):
